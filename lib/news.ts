@@ -188,7 +188,7 @@ export async function fetchNews(
       const parsed = await parser.parseURL(feed.url);
 
       return await Promise.all(
-        (parsed.items || []).slice(0, 4).map(async (item) => {
+        (parsed.items || []).slice(0, 5).map(async (item) => {
           const title = item.title || 'Bez titulku';
           const summary =
             item.contentSnippet || item.content || item.summary || '';

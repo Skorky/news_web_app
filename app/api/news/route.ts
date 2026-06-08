@@ -1,9 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { fetchNews } from '@/lib/news';
-import { Region, Topic } from '@/lib/types';
-import { getStoredArticles } from '@/lib/cache';
+import { NextRequest, NextResponse } from "next/server";
+import { fetchNews } from "@/lib/news";
+import { Region, Topic } from "@/lib/types";
+import { getStoredArticles } from "@/lib/cache";
 
 export const revalidate = 1800; // 30 minut
+
+const CACHE_HEADERS = {
+  "Cache-Control": "public, s-maxage=900, stale-while-revalidate=3600",
+};
 
 type CacheEntry = {
   updatedAt: string;
@@ -16,23 +20,26 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minut
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const region = (searchParams.get('region') || 'world') as Region;
-  const topics = (searchParams.get('topics') || '')
-    .split(',')
+  const region = (searchParams.get("region") || "world") as Region;
+  const topics = (searchParams.get("topics") || "")
+    .split(",")
     .filter(Boolean) as Topic[];
 
-  const cacheKey = `${region}:${topics.sort().join(',')}`;
+  const cacheKey = `${region}:${topics.sort().join(",")}`;
   const cached = memoryCache.get(cacheKey);
 
   if (cached) {
     const age = Date.now() - new Date(cached.updatedAt).getTime();
 
     if (age < CACHE_TTL_MS) {
-      return NextResponse.json({
-        updatedAt: cached.updatedAt,
-        data: cached.data,
-        cached: true,
-      });
+      return NextResponse.json(
+        {
+          updatedAt: cached.updatedAt,
+          data: cached.data,
+          cached: true,
+        },
+        { headers: CACHE_HEADERS },
+      );
     }
   }
 
@@ -40,15 +47,15 @@ export async function GET(request: NextRequest) {
     const stored = getStoredArticles(region, topics);
 
     if (stored.length > 0) {
-      return NextResponse.json({
-        updatedAt: new Date().toISOString(),
-
-        data: stored,
-
-        cached: true,
-
-        source: 'sqlite',
-      });
+      return NextResponse.json(
+        {
+          updatedAt: new Date().toISOString(),
+          data: stored,
+          cached: true,
+          source: "sqlite",
+        },
+        { headers: CACHE_HEADERS },
+      );
     }
 
     const data = await fetchNews(region, topics);
@@ -59,27 +66,38 @@ export async function GET(request: NextRequest) {
       data,
     });
 
-    return NextResponse.json({
-      updatedAt,
-      data,
-      cached: false,
-    });
+    return NextResponse.json(
+      {
+        updatedAt,
+        data,
+        cached: false,
+      },
+      { headers: CACHE_HEADERS },
+    );
   } catch (error) {
     if (cached) {
-      return NextResponse.json({
-        updatedAt: cached.updatedAt,
-        data: cached.data,
-        cached: true,
-        warning: 'Vrácena starší cache, protože refresh selhal.',
-      });
+      return NextResponse.json(
+        {
+          updatedAt: cached.updatedAt,
+          data: cached.data,
+          cached: true,
+          warning: "Vrácena starší cache, protože refresh selhal.",
+        },
+        { headers: CACHE_HEADERS },
+      );
     }
 
     return NextResponse.json(
       {
-        error: 'Nepodařilo se načíst zprávy',
+        error: "Nepodařilo se načíst zprávy",
         details: String(error),
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
     );
   }
 }

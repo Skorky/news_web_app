@@ -1,7 +1,6 @@
 import Parser from 'rss-parser';
 import { feeds } from './config';
 import { NewsItem, Region, Topic } from './types';
-import { summarizeToCzech } from './ai';
 import { getCachedArticle, saveCachedArticle } from './cache';
 
 const parser = new Parser({ timeout: 8000 });
@@ -207,17 +206,29 @@ export async function fetchNews(
           const ai = cached
             ? {
                 titleCz: cached.title_cz,
+
                 summaryCz: cached.summary_cz,
+
                 whyImportant: cached.why_important || fallbackWhy,
               }
-            : await summarizeToCzech(title, summary.slice(0, 3000));
+            : {
+                titleCz: title,
+
+                summaryCz: summary.slice(0, 500) || 'Shrnutí není k dispozici.',
+
+                whyImportant: fallbackWhy,
+              };
 
           if (!cached && articleUrl !== '#') {
             saveCachedArticle({
               url: articleUrl,
+
               titleOriginal: title,
+
               titleCz: ai.titleCz,
+
               summaryCz: ai.summaryCz,
+
               whyImportant: ai.whyImportant,
             });
           }

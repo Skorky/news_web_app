@@ -95,10 +95,12 @@ export default function Home() {
         ? current.filter((item) => item !== topic)
         : [...current, topic]
     );
+
+    setFiltersOpen(false);
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-7xl bg-zinc-50 px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
+    <main className="mx-auto min-h-screen max-w-7xl bg-white px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
       <div className="mb-4 flex items-center justify-between gap-3">
         <section className="flex flex-1 gap-2 overflow-x-auto pb-1">
           {regions.map((region) => (
@@ -106,13 +108,12 @@ export default function Home() {
               key={region.id}
               onClick={() => {
                 setActiveRegion(region.id);
-
                 setFiltersOpen(false);
               }}
               className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
                 activeRegion === region.id
                   ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
-                  : 'bg-white text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
+                  : 'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
               }`}
             >
               {region.label}
@@ -121,6 +122,16 @@ export default function Home() {
         </section>
 
         <ThemeToggle />
+      </div>
+
+      <div className="mb-4 lg:hidden">
+        <button
+          onClick={() => setFiltersOpen((current) => !current)}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+        >
+          <Filter size={16} />
+          {filtersOpen ? 'Zavřít filtry' : 'Filtry'}
+        </button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
@@ -182,27 +193,17 @@ export default function Home() {
               Výběr zpráv
             </h2>
 
-            <span className="rounded-full bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:bg-zinc-900 dark:text-zinc-300">
+            <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
               {items.length} článků
             </span>
           </div>
 
-          <div className="mb-4 lg:hidden">
-            <button
-              onClick={() => setFiltersOpen((current) => !current)}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-            >
-              <Filter size={16} />
-              Filtry
-            </button>
-          </div>
-
           {loading && items.length === 0 ? (
-            <div className="rounded-2xl bg-white p-8 text-zinc-600 shadow-sm dark:bg-zinc-900 dark:text-zinc-300">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
               Načítám zprávy…
             </div>
           ) : items.length === 0 ? (
-            <div className="rounded-2xl bg-white p-8 text-zinc-600 shadow-sm dark:bg-zinc-900 dark:text-zinc-300">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
               Pro tuto kombinaci zatím nejsou žádné články.
             </div>
           ) : (

@@ -141,12 +141,6 @@ export default function Home() {
           >
             <h2 className="text-lg font-semibold">{activeRegionMeta?.label}</h2>
 
-            {activeRegionMeta?.description && (
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                {activeRegionMeta.description}
-              </p>
-            )}
-
             <div className="mt-5 space-y-3">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
                 Témata

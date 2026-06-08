@@ -3,6 +3,11 @@ import { FeedSource, Region, Topic } from './types';
 export const regions: { id: Region; label: string; description: string }[] = [
   { id: 'top10', label: '🔥 TOP 10', description: '' },
   {
+    id: 'czechia',
+    label: 'Česko',
+    description: 'Česká politika, ekonomika, bezpečnost a byznys',
+  },
+  {
     id: 'world',
     label: 'Svět',
     description: 'Globální titulky a největší události dne',
@@ -21,11 +26,6 @@ export const regions: { id: Region; label: string; description: string }[] = [
     id: 'asia',
     label: 'Asie',
     description: 'Čína, Tchaj-wan, Indie, Japonsko a Korejský poloostrov',
-  },
-  {
-    id: 'czechia',
-    label: 'Česko',
-    description: 'Česká politika, ekonomika, bezpečnost a byznys',
   },
 ];
 

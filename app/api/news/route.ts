@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { fetchNews } from "@/lib/news";
-import { Region, Topic } from "@/lib/types";
-import { getStoredArticles } from "@/lib/cache";
+import { NextRequest, NextResponse } from 'next/server';
+import { fetchNews } from '@/lib/news';
+import { Region, Topic } from '@/lib/types';
+import { getStoredArticles } from '@/lib/cache';
 
 export const revalidate = 1800; // 30 minut
 
 const CACHE_HEADERS = {
-  "Cache-Control": "public, s-maxage=900, stale-while-revalidate=3600",
+  'Cache-Control': 'public, s-maxage=900, stale-while-revalidate=3600',
 };
 
 type CacheEntry = {
@@ -20,12 +20,12 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minut
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const region = (searchParams.get("region") || "world") as Region;
-  const topics = (searchParams.get("topics") || "")
-    .split(",")
+  const region = (searchParams.get('region') || 'world') as Region;
+  const topics = (searchParams.get('topics') || '')
+    .split(',')
     .filter(Boolean) as Topic[];
 
-  const cacheKey = `${region}:${topics.sort().join(",")}`;
+  const cacheKey = `${region}:${topics.sort().join(',')}`;
   const cached = memoryCache.get(cacheKey);
 
   if (cached) {
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
           data: cached.data,
           cached: true,
         },
-        { headers: CACHE_HEADERS },
+        { headers: CACHE_HEADERS }
       );
     }
   }
@@ -52,9 +52,9 @@ export async function GET(request: NextRequest) {
           updatedAt: new Date().toISOString(),
           data: stored,
           cached: true,
-          source: "sqlite",
+          source: 'sqlite',
         },
-        { headers: CACHE_HEADERS },
+        { headers: CACHE_HEADERS }
       );
     }
 
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         data,
         cached: false,
       },
-      { headers: CACHE_HEADERS },
+      { headers: CACHE_HEADERS }
     );
   } catch (error) {
     if (cached) {
@@ -81,23 +81,23 @@ export async function GET(request: NextRequest) {
           updatedAt: cached.updatedAt,
           data: cached.data,
           cached: true,
-          warning: "Vrácena starší cache, protože refresh selhal.",
+          warning: 'Vrácena starší cache, protože refresh selhal.',
         },
-        { headers: CACHE_HEADERS },
+        { headers: CACHE_HEADERS }
       );
     }
 
     return NextResponse.json(
       {
-        error: "Nepodařilo se načíst zprávy",
+        error: 'Nepodařilo se načíst zprávy',
         details: String(error),
       },
       {
         status: 500,
         headers: {
-          "Cache-Control": "no-store",
+          'Cache-Control': 'no-store',
         },
-      },
+      }
     );
   }
 }

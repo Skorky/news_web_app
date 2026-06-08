@@ -95,125 +95,125 @@ export default function Home() {
         ? current.filter((item) => item !== topic)
         : [...current, topic]
     );
-
-    setFiltersOpen(false);
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-7xl bg-white px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <section className="flex flex-1 gap-2 overflow-x-auto pb-1">
-          {regions.map((region) => (
-            <button
-              key={region.id}
-              onClick={() => {
-                setActiveRegion(region.id);
-                setFiltersOpen(false);
-              }}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
-                activeRegion === region.id
-                  ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
-                  : 'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
-              }`}
-            >
-              {region.label}
-            </button>
-          ))}
-        </section>
-
-        <ThemeToggle />
-      </div>
-
-      <div className="mb-4 lg:hidden">
-        <button
-          onClick={() => setFiltersOpen((current) => !current)}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-        >
-          <Filter size={16} />
-          {filtersOpen ? 'Zavřít filtry' : 'Filtry'}
-        </button>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-        <aside
-          className={`h-fit rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:sticky lg:top-5 lg:block ${
-            filtersOpen ? 'block' : 'hidden'
-          }`}
-        >
-          <h2 className="text-lg font-semibold">{activeRegionMeta?.label}</h2>
-
-          {activeRegionMeta?.description && (
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-              {activeRegionMeta.description}
-            </p>
-          )}
-
-          <div className="mt-5 space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              Témata
-            </h3>
-
-            {topics.map((topic) => (
-              <label
-                key={topic.id}
-                className="flex cursor-pointer items-center gap-3 rounded-xl p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+    <main className="min-h-screen bg-zinc-50 px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <section className="flex flex-1 gap-2 overflow-x-auto pb-1">
+            {regions.map((region) => (
+              <button
+                key={region.id}
+                onClick={() => {
+                  setActiveRegion(region.id);
+                  setFiltersOpen(false);
+                }}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
+                  activeRegion === region.id
+                    ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
+                    : 'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
+                }`}
               >
-                <input
-                  type="checkbox"
-                  checked={selectedTopics.includes(topic.id)}
-                  onChange={() => toggleTopic(topic.id)}
-                  className="h-4 w-4 rounded border-zinc-300"
-                />
-
-                <span className="text-sm text-zinc-800 dark:text-zinc-100">
-                  {topic.label}
-                </span>
-              </label>
+                {region.label}
+              </button>
             ))}
-          </div>
+          </section>
 
+          <ThemeToggle />
+        </div>
+
+        <div className="mb-4 lg:hidden">
           <button
-            onClick={() => loadNews()}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
+            onClick={() => setFiltersOpen((current) => !current)}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-            Aktualizovat
+            <Filter size={16} />
+            {filtersOpen ? 'Zavřít filtry' : 'Filtry'}
           </button>
+        </div>
 
-          {updatedAt && (
-            <p className="mt-3 text-xs text-zinc-500">
-              Aktualizováno: {new Date(updatedAt).toLocaleString('cs-CZ')}
-            </p>
-          )}
-        </aside>
+        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+          <aside
+            className={`h-fit rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:sticky lg:top-5 lg:block ${
+              filtersOpen ? 'block' : 'hidden'
+            }`}
+          >
+            <h2 className="text-lg font-semibold">{activeRegionMeta?.label}</h2>
 
-        <section>
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
-              Výběr zpráv
-            </h2>
+            {activeRegionMeta?.description && (
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                {activeRegionMeta.description}
+              </p>
+            )}
 
-            <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-              {items.length} článků
-            </span>
-          </div>
+            <div className="mt-5 space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+                Témata
+              </h3>
 
-          {loading && items.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-              Načítám zprávy…
-            </div>
-          ) : items.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-              Pro tuto kombinaci zatím nejsou žádné články.
-            </div>
-          ) : (
-            <div className="grid gap-4 xl:grid-cols-2">
-              {items.map((item) => (
-                <NewsCard key={item.id} item={item} />
+              {topics.map((topic) => (
+                <label
+                  key={topic.id}
+                  className="flex cursor-pointer items-center gap-3 rounded-xl p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedTopics.includes(topic.id)}
+                    onChange={() => toggleTopic(topic.id)}
+                    className="h-4 w-4 rounded border-zinc-300"
+                  />
+
+                  <span className="text-sm text-zinc-800 dark:text-zinc-100">
+                    {topic.label}
+                  </span>
+                </label>
               ))}
             </div>
-          )}
-        </section>
+
+            <button
+              onClick={() => loadNews()}
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
+            >
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+              Aktualizovat
+            </button>
+
+            {updatedAt && (
+              <p className="mt-3 text-xs text-zinc-500">
+                Aktualizováno: {new Date(updatedAt).toLocaleString('cs-CZ')}
+              </p>
+            )}
+          </aside>
+
+          <section>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
+                Výběr zpráv
+              </h2>
+
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                {items.length} článků
+              </span>
+            </div>
+
+            {loading && items.length === 0 ? (
+              <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                Načítám zprávy…
+              </div>
+            ) : items.length === 0 ? (
+              <div className="rounded-2xl border border-zinc-200 bg-white p-8 text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                Pro tuto kombinaci zatím nejsou žádné články.
+              </div>
+            ) : (
+              <div className="grid gap-4 xl:grid-cols-2">
+                {items.map((item) => (
+                  <NewsCard key={item.id} item={item} />
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
       </div>
     </main>
   );

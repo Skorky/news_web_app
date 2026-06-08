@@ -26,23 +26,10 @@ export function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label={dark ? 'Přepnout na světlý režim' : 'Přepnout na tmavý režim'}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-900 shadow-sm transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800 sm:h-auto sm:w-auto sm:px-4 sm:py-2"
+      title={dark ? 'Světlý režim' : 'Tmavý režim'}
+      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-900 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
     >
-      {dark ? (
-        <span className="inline-flex items-center gap-2">
-          <Sun size={18} />
-          <span className="hidden text-sm font-semibold sm:inline">
-            Světlý režim
-          </span>
-        </span>
-      ) : (
-        <span className="inline-flex items-center gap-2">
-          <Moon size={18} />
-          <span className="hidden text-sm font-semibold sm:inline">
-            Tmavý režim
-          </span>
-        </span>
-      )}
+      {dark ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   );
 }

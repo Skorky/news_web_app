@@ -99,41 +99,29 @@ export default function Home() {
 
   return (
     <main className="mx-auto min-h-screen max-w-7xl bg-zinc-50 px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
-      <header className="mb-5 rounded-3xl bg-zinc-950 px-5 py-5 text-white shadow-lg sm:mb-7 sm:px-7 sm:py-6">
-        <div className="flex items-center justify-between gap-4">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Nejdůležitější zprávy dne
-          </h1>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <section className="flex flex-1 gap-2 overflow-x-auto pb-1">
+          {regions.map((region) => (
+            <button
+              key={region.id}
+              onClick={() => {
+                setActiveRegion(region.id);
 
-          <div className="shrink-0">
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+                setFiltersOpen(false);
+              }}
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
+                activeRegion === region.id
+                  ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
+                  : 'bg-white text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
+              }`}
+            >
+              {region.label}
+            </button>
+          ))}
+        </section>
 
-      <section className="mb-4 flex flex-wrap gap-2">
-        {regions.map((region) => (
-          <button
-            key={region.id}
-            onClick={() => setActiveRegion(region.id)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              activeRegion === region.id
-                ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
-                : 'bg-white text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
-            }`}
-          >
-            {region.label}
-          </button>
-        ))}
-      </section>
-
-      <button
-        onClick={() => setFiltersOpen((current) => !current)}
-        className="mb-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 lg:hidden"
-      >
-        <Filter size={16} />
-        Filtry
-      </button>
+        <ThemeToggle />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <aside
@@ -197,6 +185,16 @@ export default function Home() {
             <span className="rounded-full bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:bg-zinc-900 dark:text-zinc-300">
               {items.length} článků
             </span>
+          </div>
+
+          <div className="mb-4 lg:hidden">
+            <button
+              onClick={() => setFiltersOpen((current) => !current)}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+            >
+              <Filter size={16} />
+              Filtry
+            </button>
           </div>
 
           {loading && items.length === 0 ? (

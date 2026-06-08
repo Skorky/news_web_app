@@ -98,7 +98,7 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-7xl px-4 py-5 transition-colors sm:px-5 sm:py-8">
+    <main className="mx-auto min-h-screen max-w-7xl bg-zinc-50 px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
       <header className="mb-5 rounded-3xl bg-zinc-950 px-5 py-5 text-white shadow-lg sm:mb-7 sm:px-7 sm:py-6">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">

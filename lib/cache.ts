@@ -6,12 +6,26 @@ type CachedArticle = {
   why_important: string;
 };
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL?.trim();
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY?.trim();
+
+function isValidSupabaseUrl(url?: string) {
+  return Boolean(
+    url &&
+    (url.startsWith('https://') || url.startsWith('http://')) &&
+    !url.includes('/rest/v1')
+  );
+}
+
+if (supabaseUrl && !isValidSupabaseUrl(supabaseUrl)) {
+  console.error(
+    'Invalid SUPABASE_URL. Use only project URL, for example: https://xxxxx.supabase.co'
+  );
+}
 
 const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey)
+  isValidSupabaseUrl(supabaseUrl) && supabaseAnonKey
+    ? createClient(supabaseUrl!, supabaseAnonKey)
     : null;
 
 export async function getCachedArticle(

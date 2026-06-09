@@ -20,9 +20,17 @@ export async function POST(request: NextRequest) {
     const prompt = `
 Jsi český analytik zpravodajství.
 
-Odpověz česky na dotaz uživatele k dané zprávě.
-Nevymýšlej si fakta, která nejsou v poskytnutém kontextu.
-Pokud odpověď z kontextu nevyplývá, jasně to řekni a nabídni opatrnou interpretaci.
+Uživatel se ptá na konkrétní zprávu. Máš k dispozici krátký kontext článku, ale můžeš doplnit i obecné znalosti.
+
+Pravidla:
+- Odpovídej česky.
+- Nejprve vycházej z poskytnutého kontextu článku.
+- Pokud odpověď není v kontextu uvedena, jasně napiš: "V poskytnutém shrnutí to není uvedeno."
+- Potom můžeš doplnit obecný kontext ze svých znalostí.
+- Nepředstírej přesná aktuální fakta, pokud je nemáš v kontextu.
+- U časově citlivých věcí používej formulace jako "obecně", "historicky", "podle širšího kontextu".
+- Buď stručný, praktický a srozumitelný.
+- Nepoužívej markdown tabulky.
 
 Zdroj:
 ${source || 'neznámý'}
@@ -39,7 +47,9 @@ ${whyItMatters || 'není k dispozici'}
 Otázka uživatele:
 ${question}
 
-Odpověz stručně, prakticky a srozumitelně.
+Struktura odpovědi:
+1. Krátká odpověď
+2. Pokud je potřeba: doplňující kontext
 `;
 
     const response = await client.chat.completions.create({
@@ -53,7 +63,7 @@ Odpověz stručně, prakticky a srozumitelně.
         'Nepodařilo se vygenerovat odpověď.',
     });
   } catch (error) {
-    console.error(error);
+    console.error('AI ask error:', error);
 
     return NextResponse.json(
       {

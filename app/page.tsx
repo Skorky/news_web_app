@@ -100,15 +100,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-4 flex max-w-full items-center gap-3 overflow-hidden">
-          <section className="min-w-0 flex-1 overflow-x-auto pb-1">
+        <div className="mb-4 max-w-full overflow-hidden">
+          <section className="min-w-0 overflow-x-auto pb-1">
             <div className="flex gap-2">
               {regions.map((region) => (
                 <button
                   key={region.id}
                   onClick={() => {
                     setActiveRegion(region.id);
-
                     setFiltersOpen(false);
                   }}
                   className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
@@ -122,18 +121,18 @@ export default function Home() {
               ))}
             </div>
           </section>
-
-          <ThemeToggle />
         </div>
 
-        <div className="mb-4 lg:hidden">
+        <div className="mb-4 flex items-center gap-3 lg:hidden">
           <button
             onClick={() => setFiltersOpen((current) => !current)}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
           >
             <Filter size={16} />
             {filtersOpen ? 'Zavřít filtry' : 'Filtry'}
           </button>
+
+          <ThemeToggle />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
@@ -142,6 +141,10 @@ export default function Home() {
               filtersOpen ? 'block' : 'hidden'
             }`}
           >
+            <div className="mb-4 hidden lg:flex">
+              <ThemeToggle />
+            </div>
+
             <h2 className="text-lg font-semibold">{activeRegionMeta?.label}</h2>
 
             <div className="mt-5 space-y-3">
@@ -189,7 +192,7 @@ export default function Home() {
                 Výběr zpráv
               </h2>
 
-              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+              <span className="shrink-0 rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
                 {items.length} článků
               </span>
             </div>

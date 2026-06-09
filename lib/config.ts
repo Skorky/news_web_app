@@ -265,49 +265,33 @@ export const feeds: FeedSource[] = [
 
   {
     name: "Deutsche Welle Europe",
-
     region: "europe",
-
     topics: ["top", "politics", "economy", "war_security"],
-
     url: "https://rss.dw.com/xml/rss-en-eu",
-
     paywall: "ne",
   },
 
   {
     name: "France 24 Europe",
-
     region: "europe",
-
     topics: ["top", "politics", "war_security"],
-
     url: "https://www.france24.com/en/europe/rss",
-
     paywall: "ne",
   },
 
   {
     name: "The Guardian Europe",
-
     region: "europe",
-
     topics: ["top", "politics", "war_security"],
-
     url: "https://www.theguardian.com/world/europe-news/rss",
-
     paywall: "ne",
   },
 
   {
     name: "RFE/RL Europe",
-
     region: "europe",
-
     topics: ["top", "politics", "war_security", "investigations"],
-
     url: "https://www.rferl.org/api/zrqiteuuir",
-
     paywall: "ne",
   },
 
@@ -324,6 +308,14 @@ export const feeds: FeedSource[] = [
     region: "czechia",
     topics: ["economy", "finance"],
     url: "https://www.ceskenoviny.cz/sluzby/rss/ekonomika.php",
+    paywall: "ne",
+  },
+
+  {
+    name: "E15",
+    region: "czechia",
+    topics: ["economy", "finance"],
+    url: "https://www.e15.cz/rss",
     paywall: "ne",
   },
 ];

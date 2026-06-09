@@ -262,4 +262,52 @@ export const feeds: FeedSource[] = [
     url: 'http://rss.cnn.com/rss/cnn_allpolitics.rss',
     paywall: 'ne',
   },
+
+  {
+    name: 'Deutsche Welle Europe',
+
+    region: 'europe',
+
+    topics: ['top', 'politics', 'economy', 'war_security'],
+
+    url: 'https://rss.dw.com/xml/rss-en-eu',
+
+    paywall: 'ne',
+  },
+
+  {
+    name: 'France 24 Europe',
+
+    region: 'europe',
+
+    topics: ['top', 'politics', 'war_security'],
+
+    url: 'https://www.france24.com/en/europe/rss',
+
+    paywall: 'ne',
+  },
+
+  {
+    name: 'The Guardian Europe',
+
+    region: 'europe',
+
+    topics: ['top', 'politics', 'war_security'],
+
+    url: 'https://www.theguardian.com/world/europe-news/rss',
+
+    paywall: 'ne',
+  },
+
+  {
+    name: 'RFE/RL Europe',
+
+    region: 'europe',
+
+    topics: ['top', 'politics', 'war_security', 'investigations'],
+
+    url: 'https://www.rferl.org/api/zrqiteuuir',
+
+    paywall: 'ne',
+  },
 ];

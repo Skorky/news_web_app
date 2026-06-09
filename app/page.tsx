@@ -1,32 +1,33 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { Filter, RefreshCw } from "lucide-react";
-import { regions, topics } from "@/lib/config";
-import { NewsItem, Region, Topic } from "@/lib/types";
-import { NewsCard } from "@/components/NewsCard";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { useEffect, useMemo, useState } from 'react';
+import { Filter, RefreshCw } from 'lucide-react';
+import { regions, topics } from '@/lib/config';
+import { NewsItem, Region, Topic } from '@/lib/types';
+import { NewsCard } from '@/components/NewsCard';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Home() {
-  const [activeRegion, setActiveRegion] = useState<Region>("world");
-  const [selectedTopics, setSelectedTopics] = useState<Topic[]>(["top"]);
+  const [activeRegion, setActiveRegion] = useState<Region>('world');
+  const [selectedTopics, setSelectedTopics] = useState<Topic[]>(['top']);
   const [itemsByRegion, setItemsByRegion] = useState<
     Record<string, NewsItem[]>
   >({});
-  const [updatedAt, setUpdatedAt] = useState<string>("");
+  const [updatedAt, setUpdatedAt] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [dailySummary, setDailySummary] = useState("");
+  const [dailySummary, setDailySummary] = useState('');
 
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryCreatedAt, setSummaryCreatedAt] = useState('');
 
   const items = itemsByRegion[activeRegion] || [];
 
   const activeRegionMeta = useMemo(
     () => regions.find((region) => region.id === activeRegion),
-    [activeRegion],
+    [activeRegion]
   );
 
   async function loadNews(regionToLoad: Region = activeRegion) {
@@ -34,11 +35,11 @@ export default function Home() {
 
     const params = new URLSearchParams({
       region: regionToLoad,
-      topics: selectedTopics.join(","),
+      topics: selectedTopics.join(','),
     });
 
     const response = await fetch(`/api/news?${params.toString()}`, {
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     const payload = await response.json();
@@ -51,9 +52,10 @@ export default function Home() {
     setUpdatedAt(payload.updatedAt || new Date().toISOString());
     setLoading(false);
 
-    setDailySummary("");
+    setDailySummary('');
     setSummaryOpen(false);
     setSummaryLoading(false);
+    setSummaryCreatedAt('');
   }
 
   async function preloadRegions() {
@@ -65,11 +67,11 @@ export default function Home() {
 
         const params = new URLSearchParams({
           region: regionId,
-          topics: selectedTopics.join(","),
+          topics: selectedTopics.join(','),
         });
 
         const response = await fetch(`/api/news?${params.toString()}`, {
-          cache: "no-store",
+          cache: 'no-store',
         });
 
         const payload = await response.json();
@@ -78,7 +80,7 @@ export default function Home() {
           ...current,
           [regionId]: payload.data || [],
         }));
-      }),
+      })
     );
   }
 
@@ -91,18 +93,18 @@ export default function Home() {
         loadNews();
         preloadRegions();
       },
-      30 * 60 * 1000,
+      30 * 60 * 1000
     );
 
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeRegion, selectedTopics.join(",")]);
+  }, [activeRegion, selectedTopics.join(',')]);
 
   function toggleTopic(topic: Topic) {
     setSelectedTopics((current) =>
       current.includes(topic)
         ? current.filter((item) => item !== topic)
-        : [...current, topic],
+        : [...current, topic]
     );
   }
 
@@ -115,10 +117,10 @@ export default function Home() {
     try {
       setSummaryLoading(true);
 
-      const response = await fetch("/api/daily-summary", {
-        method: "POST",
+      const response = await fetch('/api/daily-summary', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           regionName: activeRegionMeta?.label || activeRegion,
@@ -129,10 +131,19 @@ export default function Home() {
       const payload = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload.error || "Nepodařilo se vytvořit souhrn.");
+        throw new Error(payload.error || 'Nepodařilo se vytvořit souhrn.');
       }
 
-      setDailySummary(payload.summary || "");
+      setDailySummary(payload.summary || '');
+
+      setSummaryCreatedAt(
+        new Date().toLocaleTimeString('cs-CZ', {
+          hour: '2-digit',
+
+          minute: '2-digit',
+        })
+      );
+
       setSummaryOpen(true);
     } catch (error) {
       console.error(error);
@@ -156,8 +167,8 @@ export default function Home() {
                   }}
                   className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
                     activeRegion === region.id
-                      ? "bg-zinc-950 text-white dark:bg-blue-600 dark:text-white"
-                      : "border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                      ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
+                      : 'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
                   }`}
                 >
                   {region.label}
@@ -173,7 +184,7 @@ export default function Home() {
             className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-800 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
           >
             <Filter size={16} />
-            {filtersOpen ? "Zavřít filtry" : "Filtry"}
+            {filtersOpen ? 'Zavřít filtry' : 'Filtry'}
           </button>
 
           <ThemeToggle />
@@ -182,7 +193,7 @@ export default function Home() {
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <aside
             className={`h-fit rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:sticky lg:top-5 lg:block ${
-              filtersOpen ? "block" : "hidden"
+              filtersOpen ? 'block' : 'hidden'
             }`}
           >
             <div className="mb-4 hidden lg:flex">
@@ -219,13 +230,13 @@ export default function Home() {
               onClick={() => loadNews()}
               className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
             >
-              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
               Aktualizovat
             </button>
 
             {updatedAt && (
               <p className="mt-3 text-xs text-zinc-500">
-                Aktualizováno: {new Date(updatedAt).toLocaleString("cs-CZ")}
+                Aktualizováno: {new Date(updatedAt).toLocaleString('cs-CZ')}
               </p>
             )}
           </aside>
@@ -238,10 +249,10 @@ export default function Home() {
                 className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
               >
                 {summaryLoading
-                  ? "🧠 Vytvářím souhrn..."
+                  ? '🧠 Vytvářím briefing...'
                   : summaryOpen
-                    ? "🧠 Skrýt souhrn"
-                    : `🧠 Souhrn ${activeRegionMeta?.label}`}
+                    ? '🧠 Skrýt briefing'
+                    : '🧠 Denní briefing'}
               </button>
 
               <span className="shrink-0 rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-600 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
@@ -249,10 +260,26 @@ export default function Home() {
               </span>
             </div>
 
+            {summaryLoading && (
+              <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm dark:border-blue-900 dark:bg-blue-950/30">
+                <div className="animate-pulse text-sm text-zinc-500">
+                  🧠 AI právě připravuje denní briefing...
+                </div>
+              </div>
+            )}
+
             {summaryOpen && dailySummary && (
-              <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-                <div className="mb-3 text-sm font-semibold text-zinc-500">
-                  AI briefing
+              <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm dark:border-blue-900 dark:bg-blue-950/30">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-sm font-semibold text-zinc-500">
+                    Denní briefing • {activeRegionMeta?.label}
+                  </div>
+
+                  {summaryCreatedAt && (
+                    <div className="text-xs text-zinc-400">
+                      Vytvořeno v {summaryCreatedAt}
+                    </div>
+                  )}
                 </div>
 
                 <div className="whitespace-pre-line text-sm leading-7 text-zinc-800 dark:text-zinc-200">

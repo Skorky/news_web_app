@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Bot,
   ExternalLink,
   Flame,
   Lock,
   Send,
+  Share2,
   ShieldAlert,
-} from 'lucide-react';
-import { NewsItem } from '@/lib/types';
+} from "lucide-react";
+import { NewsItem } from "@/lib/types";
 type AiMessage = {
   question: string;
   answer: string;
@@ -18,10 +19,11 @@ type AiMessage = {
 export function NewsCard({ item }: { item: NewsItem }) {
   const [expanded, setExpanded] = useState(false);
   const [askOpen, setAskOpen] = useState(false);
-  const [question, setQuestion] = useState('');
+  const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<AiMessage[]>([]);
   const [asking, setAsking] = useState(false);
-  const [askError, setAskError] = useState('');
+  const [askError, setAskError] = useState("");
+  const [shareNotice, setShareNotice] = useState("");
 
   async function askAi() {
     const trimmedQuestion = question.trim();
@@ -29,13 +31,13 @@ export function NewsCard({ item }: { item: NewsItem }) {
     if (!trimmedQuestion) return;
 
     setAsking(true);
-    setAskError('');
+    setAskError("");
 
     try {
-      const response = await fetch('/api/ask', {
-        method: 'POST',
+      const response = await fetch("/api/ask", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           title: item.title,
@@ -55,7 +57,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
       const payload = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload.error || 'Nepodařilo se získat odpověď.');
+        throw new Error(payload.error || "Nepodařilo se získat odpověď.");
       }
 
       setMessages((current) => [
@@ -64,17 +66,43 @@ export function NewsCard({ item }: { item: NewsItem }) {
         {
           question: trimmedQuestion,
 
-          answer: payload.answer || 'AI nevrátila žádnou odpověď.',
+          answer: payload.answer || "AI nevrátila žádnou odpověď.",
         },
       ]);
 
-      setQuestion('');
+      setQuestion("");
     } catch (error) {
       setAskError(
-        error instanceof Error ? error.message : 'Nepodařilo se získat odpověď.'
+        error instanceof Error
+          ? error.message
+          : "Nepodařilo se získat odpověď.",
       );
     } finally {
       setAsking(false);
+    }
+  }
+
+  async function shareArticle() {
+    const shareText = `${item.title}\n\n${item.summaryCz}\n\n${item.url}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: item.title,
+
+          text: item.summaryCz,
+
+          url: item.url,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareText);
+
+        setShareNotice("Odkaz zkopírován.");
+
+        setTimeout(() => setShareNotice(""), 2500);
+      }
+    } catch {
+      // uživatel mohl zavřít sdílení
     }
   }
 
@@ -92,13 +120,13 @@ export function NewsCard({ item }: { item: NewsItem }) {
           <Flame size={14} /> Důležitost {item.importance}/10
         </span>
 
-        {item.topics.includes('investigations') && (
+        {item.topics.includes("investigations") && (
           <span className="flex items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50 px-2 py-1 text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
             <ShieldAlert size={14} /> Investigativa
           </span>
         )}
 
-        {item.paywall !== 'ne' && (
+        {item.paywall !== "ne" && (
           <span className="flex items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50 px-2 py-1 text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
             <Lock size={14} /> Paywall: {item.paywall}
           </span>
@@ -112,8 +140,8 @@ export function NewsCard({ item }: { item: NewsItem }) {
       <p
         className={
           expanded
-            ? 'mt-3 text-sm leading-6 text-zinc-700 dark:text-zinc-300'
-            : 'mt-3 line-clamp-2 text-sm leading-6 text-zinc-700 dark:text-zinc-300'
+            ? "mt-3 text-sm leading-6 text-zinc-700 dark:text-zinc-300"
+            : "mt-3 line-clamp-2 text-sm leading-6 text-zinc-700 dark:text-zinc-300"
         }
       >
         {item.summaryCz}
@@ -148,7 +176,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
           >
             <Send size={16} />
-            {asking ? 'Ptám se AI…' : 'Zeptat se'}
+            {asking ? "Ptám se AI…" : "Zeptat se"}
           </button>
 
           {askError && (
@@ -182,8 +210,8 @@ export function NewsCard({ item }: { item: NewsItem }) {
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
         <span>
           {item.publishedAt
-            ? new Date(item.publishedAt).toLocaleString('cs-CZ')
-            : 'Čas neznámý'}
+            ? new Date(item.publishedAt).toLocaleString("cs-CZ")
+            : "Čas neznámý"}
         </span>
 
         {expanded && (
@@ -196,7 +224,19 @@ export function NewsCard({ item }: { item: NewsItem }) {
               className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:underline dark:text-zinc-100"
             >
               <Bot size={14} />
-              {askOpen ? 'Zavřít AI dotaz' : 'Zeptat se AI'}
+              {askOpen ? "Zavřít AI dotaz" : "Zeptat se AI"}
+            </button>
+
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+
+                shareArticle();
+              }}
+              className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+            >
+              <Share2 size={14} />
+              Sdílet
             </button>
 
             <a
@@ -211,6 +251,12 @@ export function NewsCard({ item }: { item: NewsItem }) {
           </div>
         )}
       </div>
+
+      {shareNotice && (
+        <div className="mt-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          {shareNotice}
+        </div>
+      )}
 
       {!expanded && (
         <div className="mt-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">

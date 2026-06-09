@@ -7,6 +7,15 @@ import { NewsItem, Region, Topic } from '@/lib/types';
 import { NewsCard } from '@/components/NewsCard';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
+type RegionSummary = {
+  summary: string;
+  createdAt: string;
+  expiresAt: number;
+};
+
+const SUMMARY_CACHE_KEY = 'dailySummaries';
+const SUMMARY_TTL_MS = 30 * 60 * 1000;
+
 export default function Home() {
   const [activeRegion, setActiveRegion] = useState<Region>('world');
   const [selectedTopics, setSelectedTopics] = useState<Topic[]>(['top']);
@@ -16,10 +25,9 @@ export default function Home() {
   const [updatedAt, setUpdatedAt] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+
   const [dailySummary, setDailySummary] = useState('');
-
   const [summaryOpen, setSummaryOpen] = useState(false);
-
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [summaryCreatedAt, setSummaryCreatedAt] = useState('');
 
@@ -29,6 +37,41 @@ export default function Home() {
     () => regions.find((region) => region.id === activeRegion),
     [activeRegion]
   );
+
+  function getCachedSummaries(): Record<string, RegionSummary> {
+    try {
+      return JSON.parse(localStorage.getItem(SUMMARY_CACHE_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  function getCachedSummary(region: Region) {
+    const summaries = getCachedSummaries();
+    const cached = summaries[region];
+
+    if (!cached || cached.expiresAt < Date.now()) {
+      return null;
+    }
+
+    return cached;
+  }
+
+  function saveCachedSummary(
+    region: Region,
+    summary: string,
+    createdAt: string
+  ) {
+    const summaries = getCachedSummaries();
+
+    summaries[region] = {
+      summary,
+      createdAt,
+      expiresAt: Date.now() + SUMMARY_TTL_MS,
+    };
+
+    localStorage.setItem(SUMMARY_CACHE_KEY, JSON.stringify(summaries));
+  }
 
   async function loadNews(regionToLoad: Region = activeRegion) {
     setLoading(true);
@@ -52,10 +95,18 @@ export default function Home() {
     setUpdatedAt(payload.updatedAt || new Date().toISOString());
     setLoading(false);
 
-    setDailySummary('');
+    const cached = getCachedSummary(regionToLoad);
+
+    if (cached) {
+      setDailySummary(cached.summary);
+      setSummaryCreatedAt(cached.createdAt);
+    } else {
+      setDailySummary('');
+      setSummaryCreatedAt('');
+    }
+
     setSummaryOpen(false);
     setSummaryLoading(false);
-    setSummaryCreatedAt('');
   }
 
   async function preloadRegions() {
@@ -109,7 +160,11 @@ export default function Home() {
   }
 
   async function generateSummary() {
-    if (dailySummary) {
+    const cached = getCachedSummary(activeRegion);
+
+    if (cached) {
+      setDailySummary(cached.summary);
+      setSummaryCreatedAt(cached.createdAt);
       setSummaryOpen((current) => !current);
       return;
     }
@@ -119,9 +174,7 @@ export default function Home() {
 
       const response = await fetch('/api/daily-summary', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           regionName: activeRegionMeta?.label || activeRegion,
           articles: items,
@@ -134,17 +187,16 @@ export default function Home() {
         throw new Error(payload.error || 'Nepodařilo se vytvořit souhrn.');
       }
 
+      const createdAt = new Date().toLocaleTimeString('cs-CZ', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
       setDailySummary(payload.summary || '');
-
-      setSummaryCreatedAt(
-        new Date().toLocaleTimeString('cs-CZ', {
-          hour: '2-digit',
-
-          minute: '2-digit',
-        })
-      );
-
+      setSummaryCreatedAt(createdAt);
       setSummaryOpen(true);
+
+      saveCachedSummary(activeRegion, payload.summary || '', createdAt);
     } catch (error) {
       console.error(error);
     } finally {
@@ -218,7 +270,6 @@ export default function Home() {
                     onChange={() => toggleTopic(topic.id)}
                     className="h-4 w-4 rounded border-zinc-300"
                   />
-
                   <span className="text-sm text-zinc-800 dark:text-zinc-100">
                     {topic.label}
                   </span>
@@ -282,7 +333,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="whitespace-pre-line text-sm leading-7 text-zinc-800 dark:text-zinc-200">
+                <div className="whitespace-pre-line text-[15px] leading-8 text-zinc-800 dark:text-zinc-200">
                   {dailySummary}
                 </div>
               </div>

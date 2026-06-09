@@ -39,10 +39,16 @@ export function NewsCard({ item }: { item: NewsItem }) {
         },
         body: JSON.stringify({
           title: item.title,
+
           summaryCz: item.summaryCz,
+
           whyItMatters: item.whyItMatters,
+
           source: item.source,
+
           question: trimmedQuestion,
+
+          history: messages,
         }),
       });
 

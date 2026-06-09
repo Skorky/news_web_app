@@ -4,10 +4,7 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function summarizeToCzech(
-  title: string,
-  summary: string
-) {
+export async function summarizeToCzech(title: string, summary: string) {
   try {
     const prompt = `
 Jsi zkušený český analytik světového zpravodajství.
@@ -46,16 +43,10 @@ Pravidla:
       response_format: { type: "json_object" },
     });
 
-    return JSON.parse(
-      response.choices[0].message.content || "{}"
-    );
+    return JSON.parse(response.choices[0].message.content || "{}");
   } catch (error) {
-    console.error(error);
+    console.error("OpenAI summarizeToCzech error:", error);
 
-    return {
-      titleCz: title,
-      summaryCz: "AI shrnutí bude doplněno později.",
-      whyImportant: "Článek čeká na zpracování.",
-    };
+    throw error;
   }
 }

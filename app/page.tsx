@@ -100,24 +100,27 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-5 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-50 sm:px-5 sm:py-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <section className="flex flex-1 gap-2 overflow-x-auto pb-1">
-            {regions.map((region) => (
-              <button
-                key={region.id}
-                onClick={() => {
-                  setActiveRegion(region.id);
-                  setFiltersOpen(false);
-                }}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
-                  activeRegion === region.id
-                    ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
-                    : 'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
-                }`}
-              >
-                {region.label}
-              </button>
-            ))}
+        <div className="mb-4 flex max-w-full items-center gap-3 overflow-hidden">
+          <section className="min-w-0 flex-1 overflow-x-auto pb-1">
+            <div className="flex gap-2">
+              {regions.map((region) => (
+                <button
+                  key={region.id}
+                  onClick={() => {
+                    setActiveRegion(region.id);
+
+                    setFiltersOpen(false);
+                  }}
+                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
+                    activeRegion === region.id
+                      ? 'bg-zinc-950 text-white dark:bg-blue-600 dark:text-white'
+                      : 'border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  {region.label}
+                </button>
+              ))}
+            </div>
           </section>
 
           <ThemeToggle />
@@ -181,7 +184,7 @@ export default function Home() {
           </aside>
 
           <section>
-            <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="mb-4 flex max-w-full items-center gap-3 overflow-hidden">
               <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
                 Výběr zpráv
               </h2>

@@ -50,10 +50,13 @@ Pravidla:
 - Vysvětli souvislosti.
 - Neopisuj každý článek zvlášť.
 - Hledej společné trendy.
-- Piš jako redaktor ranního briefingu.
+- Piš jako editor zpravodajského briefingu.
 - Max 250 slov.
 - Nepoužívej markdown tabulky.
-- Nepoužívej nadpisy typu "Úvod" nebo "Závěr".
+- Nepiš žádný nadpis na začátku odpovědi.
+- Nepoužívej názvy typu "Ranní přehled", "Denní briefing", "Souhrn", "Úvod" nebo "Závěr".
+- Začni rovnou první větou briefingu.
+- Nepiš název regionu jako samostatný řádek.
 
 Články:
 

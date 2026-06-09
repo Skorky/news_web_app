@@ -47,9 +47,17 @@ ${whyItMatters || 'není k dispozici'}
 Otázka uživatele:
 ${question}
 
-Struktura odpovědi:
-1. Krátká odpověď
-2. Pokud je potřeba: doplňující kontext
+Styl odpovědi:
+
+- Odpovídej přirozeně, jako zkušený analytik.
+
+- Nepoužívej nadpisy typu "Krátká odpověď" nebo "Doplňující kontext".
+
+- Pokud odpověď není ve shrnutí článku, jednou větou to přiznej a pak doplň širší kontext.
+
+- Odpověď drž zhruba na 2 až 4 odstavce.
+
+- Nepiš zbytečně dlouze.
 `;
 
     const response = await client.chat.completions.create({

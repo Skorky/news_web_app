@@ -162,7 +162,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
                   </div>
 
                   <div className="flex justify-start">
-                    <div className="max-w-[90%] rounded-2xl bg-white px-4 py-3 text-sm leading-6 text-zinc-800 shadow-sm dark:bg-zinc-800 dark:text-zinc-200">
+                    <div className="max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm leading-6 text-zinc-800 shadow-sm dark:bg-zinc-800 dark:text-zinc-200">
                       {message.answer}
                     </div>
                   </div>

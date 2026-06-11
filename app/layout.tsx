@@ -1,22 +1,23 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import "./globals.css";
+import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: 'Skorky News',
-  description: 'Přehled nejdůležitějších světových a českých zpráv v češtině',
+  title: "Skorky News",
+  description: "Přehled nejdůležitějších světových a českých zpráv v češtině",
 
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
 
   icons: {
-    icon: '/icon-192.png',
-    apple: '/icon-192.png',
+    icon: "/icon-192.png",
+    apple: "/icon-192.png",
   },
 
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
-    title: 'Skorky News',
+    statusBarStyle: "default",
+    title: "Skorky News",
   },
 };
 
@@ -29,6 +30,8 @@ export default function RootLayout({
     <html lang="cs">
       <body>
         {children}
+
+        <Analytics />
         <SpeedInsights />
       </body>
     </html>
